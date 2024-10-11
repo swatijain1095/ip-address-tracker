@@ -1,0 +1,7 @@
+.leaflet-control-zoom {
+  top: 600px !important;
+}
+
+.leaflet-control-attribution {
+  display: none;
+}
