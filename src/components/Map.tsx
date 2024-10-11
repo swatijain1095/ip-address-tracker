@@ -4,6 +4,7 @@ import { useRef } from "react";
 import { MapContainer, TileLayer } from "react-leaflet";
 import { Input } from "./Input";
 import { GoChevronRight } from "react-icons/go";
+import { DetailsCard } from "./DetailsCard";
 
 export default function Map() {
   const mapRef = useRef<LeafletMap | null>(null);
@@ -23,9 +24,7 @@ export default function Map() {
         />
         <GoChevronRight size={24} color="#6C5DD4" />
       </div>
-      <div className="absolute bottom-0 left-0 right-0 bg-customPurple p-8 z-[1000] rounded-t-2xl">
-        <h1 className="text-5xl text-white font-bold text-center">test</h1>
-      </div>
+      <DetailsCard />
       <MapContainer
         ref={mapRef}
         center={[40.7, -74]}
