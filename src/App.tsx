@@ -1,7 +1,12 @@
 import "./App.css";
+import Map from "./components/Map";
 
 function App() {
-  return <div>IP Address Tracker</div>;
+  return (
+    <div>
+      <Map />
+    </div>
+  );
 }
 
 export default App;
