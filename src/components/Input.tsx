@@ -3,6 +3,8 @@ interface InputProps {
   placeholder?: string;
   style?: React.CSSProperties;
   type?: string;
+  onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  value?: string;
 }
 
 export const Input = ({
@@ -10,6 +12,8 @@ export const Input = ({
   placeholder = "Search for any IP address",
   style,
   type,
+  value,
+  onChange,
 }: InputProps) => {
   return (
     <input
@@ -17,6 +21,8 @@ export const Input = ({
       placeholder={placeholder}
       style={style}
       type={type}
+      value={value}
+      onChange={onChange}
     />
   );
 };
