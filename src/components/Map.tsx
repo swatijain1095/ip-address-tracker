@@ -1,6 +1,6 @@
 import "leaflet/dist/leaflet.css";
 import type { Map as LeafletMap } from "leaflet";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { MapContainer, TileLayer } from "react-leaflet";
 import { Input } from "./Input";
 import { GoChevronRight } from "react-icons/go";
@@ -8,6 +8,12 @@ import { DetailsCard } from "./DetailsCard";
 
 export default function Map() {
   const mapRef = useRef<LeafletMap | null>(null);
+  const [value, setValue] = useState("");
+
+  const handleSubmit = (e: React.FormEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    console.log(handleSubmit);
+  };
 
   return (
     <div className="relative h-screen w-screen">
@@ -16,13 +22,23 @@ export default function Map() {
           IP Address Tracker
         </h1>
       </div>
-      <div className="absolute flex items-center p-4 top-20 left-1/2 transform -translate-x-1/2 h-12 rounded-lg shadow-lg shadow-gray-200 bg-gray-50 z-[1000]">
+      <div
+        className="absolute flex items-center p-4 top-20 left-1/2 transform -translate-x-1/2 h-12 rounded-lg shadow-lg shadow-gray-200 bg-gray-50 z-[1000]"
+        onSubmit={handleSubmit}
+      >
         <Input
           className="bg-gray-50 focus:outline-none"
           style={{ width: "550px" }}
           type="text"
+          value={value}
+          onChange={(e) => setValue(e.target.value)}
         />
-        <GoChevronRight size={24} color="#6C5DD4" />
+        <GoChevronRight
+          size={24}
+          color="#6C5DD4"
+          type="submit"
+          className="cursor-pointer"
+        />
       </div>
       <DetailsCard />
       <MapContainer
