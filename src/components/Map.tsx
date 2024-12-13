@@ -8,11 +8,12 @@ import { DetailsCard } from "./DetailsCard";
 
 export default function Map() {
   const mapRef = useRef<LeafletMap | null>(null);
-  const [value, setValue] = useState("");
+  const [ipAddress, setIpAddress] = useState("");
 
-  const handleSubmit = (e: React.FormEvent<HTMLDivElement>) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    console.log("map");
     e.preventDefault();
-    console.log(handleSubmit);
+    console.log(e);
   };
 
   return (
@@ -22,7 +23,7 @@ export default function Map() {
           IP Address Tracker
         </h1>
       </div>
-      <div
+      <form
         className="absolute flex items-center p-4 top-20 left-1/2 transform -translate-x-1/2 h-12 rounded-lg shadow-lg shadow-gray-200 bg-gray-50 z-[1000]"
         onSubmit={handleSubmit}
       >
@@ -30,16 +31,16 @@ export default function Map() {
           className="bg-gray-50 focus:outline-none"
           style={{ width: "550px" }}
           type="text"
-          value={value}
-          onChange={(e) => setValue(e.target.value)}
+          value={ipAddress}
+          onChange={(e) => setIpAddress(e.target.value)}
         />
-        <GoChevronRight
-          size={24}
-          color="#6C5DD4"
+        <button
           type="submit"
-          className="cursor-pointer"
-        />
-      </div>
+          className="cursor-pointer bg-transparent border-none p-0"
+        >
+          <GoChevronRight size={24} color="#6C5DD4" />
+        </button>
+      </form>
       <DetailsCard />
       <MapContainer
         ref={mapRef}
