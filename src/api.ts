@@ -1,4 +1,4 @@
-const apiKey = import.meta.env.GEOLOCATION_API_KEY;
+const apiKey = import.meta.env.VITE_API_KEY;
 type GeoLocationProps = {
   ip: string;
 };

@@ -5,10 +5,13 @@ import { Input } from "./Input";
 import { GoChevronRight } from "react-icons/go";
 import { DetailsCard } from "./DetailsCard";
 import MapInteraction from "./MapInteraction";
+import { getGeoLocation } from "../api";
 
 export default function Map() {
   const [ipAddress, setIpAddress] = useState("");
   const [error, setError] = useState("");
+  const [geoData, setGeoData] = useState<any>(null);
+  const [position, setPosition] = useState<[number, number]>([40.7, -74]);
 
   const validateInputIP = (ip: string): boolean => {
     const ipRegex =
@@ -16,7 +19,7 @@ export default function Map() {
     return ipRegex.test(ip);
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!validateInputIP(ipAddress)) {
       setError("Please enter a valid IP address.");
@@ -24,7 +27,19 @@ export default function Map() {
     }
 
     setError("");
-    console.log(e);
+
+    try {
+      const data = await getGeoLocation({ ip: ipAddress });
+      setGeoData({
+        ip: data.ip,
+        location: `${data.location.city}, ${data.location.region} ${data.location.postalCode}`,
+        timeZone: data.location.timezone,
+        isp: data.isp,
+      });
+      setPosition([data.location.lat, data.location.lng]);
+    } catch (err: any) {
+      setError(err.message);
+    }
   };
 
   return (
@@ -52,7 +67,15 @@ export default function Map() {
           <GoChevronRight size={24} color="#6C5DD4" />
         </button>
       </form>
-      <DetailsCard />
+
+      {geoData && (
+        <DetailsCard
+          ip={geoData.ip}
+          location={geoData.location}
+          timeZone={geoData.timeZone}
+          isp={geoData.isp}
+        />
+      )}
       <MapContainer
         center={[40.7, -74]}
         zoom={12}
