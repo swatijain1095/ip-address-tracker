@@ -68,6 +68,12 @@ export default function Map() {
         </button>
       </form>
 
+      {error && (
+        <p className="absolute top-32 left-1/2 transform -translate-x-1/2 font-bold text-red-500 bg-gray-100 px-1 py-1 rounded z-[1000]">
+          {error}
+        </p>
+      )}
+
       {geoData && (
         <DetailsCard
           ip={geoData.ip}
@@ -77,7 +83,7 @@ export default function Map() {
         />
       )}
       <MapContainer
-        center={[40.7, -74]}
+        center={position}
         zoom={12}
         scrollWheelZoom
         className="h-full w-full z-0"
