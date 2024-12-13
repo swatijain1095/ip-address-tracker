@@ -8,10 +8,22 @@ import MapInteraction from "./MapInteraction";
 
 export default function Map() {
   const [ipAddress, setIpAddress] = useState("");
+  const [error, setError] = useState("");
+
+  const validateInputIP = (ip: string): boolean => {
+    const ipRegex =
+      /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9x][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
+    return ipRegex.test(ip);
+  };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    console.log("map");
     e.preventDefault();
+    if (!validateInputIP(ipAddress)) {
+      setError("Please enter a valid IP address.");
+      return;
+    }
+
+    setError("");
     console.log(e);
   };
 
