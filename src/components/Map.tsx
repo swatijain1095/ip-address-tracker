@@ -1,10 +1,9 @@
 import "leaflet/dist/leaflet.css";
 import { useState } from "react";
-import { MapContainer, TileLayer } from "react-leaflet";
+import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
 import { Input } from "./Input";
 import { GoChevronRight } from "react-icons/go";
 import { DetailsCard } from "./DetailsCard";
-import MapInteraction from "./MapInteraction";
 import { getGeoLocation } from "../api";
 
 export default function Map() {
@@ -37,8 +36,12 @@ export default function Map() {
         isp: data.isp,
       });
       setPosition([data.location.lat, data.location.lng]);
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError("An unknown error occurred.");
+      }
     }
   };
 
@@ -89,7 +92,12 @@ export default function Map() {
         className="h-full w-full z-0"
       >
         <TileLayer url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png" />
-        <MapInteraction />
+        {/* <MapInteraction /> */}
+        <Marker position={position}>
+          <Popup>
+            A pretty CSS3 popup. <br /> Easily customizable.
+          </Popup>
+        </Marker>
       </MapContainer>
     </div>
   );
