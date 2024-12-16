@@ -1,15 +1,16 @@
 import "leaflet/dist/leaflet.css";
-import { useState } from "react";
-import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
+import { useEffect, useState } from "react";
+import { MapContainer, Marker, Popup, TileLayer, useMap } from "react-leaflet";
 import { Input } from "./Input";
 import { GoChevronRight } from "react-icons/go";
 import { DetailsCard } from "./DetailsCard";
 import { getGeoLocation } from "../api";
+import { Geolocation } from "../type";
 
 export default function Map() {
   const [ipAddress, setIpAddress] = useState("");
   const [error, setError] = useState("");
-  const [geoData, setGeoData] = useState<any>(null);
+  const [geoData, setGeoData] = useState<Geolocation | null>(null);
   const [position, setPosition] = useState<[number, number]>([40.7, -74]);
 
   const validateInputIP = (ip: string): boolean => {
@@ -17,6 +18,12 @@ export default function Map() {
       /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9x][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
     return ipRegex.test(ip);
   };
+
+  useEffect(() => {
+    if (geoData?.location?.lat && geoData?.location?.lng) {
+      setPosition([geoData.location.lat, geoData.location.lng]);
+    }
+  }, [geoData]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -29,12 +36,12 @@ export default function Map() {
 
     try {
       const data = await getGeoLocation({ ip: ipAddress });
-      setGeoData({
-        ip: data.ip,
-        location: `${data.location.city}, ${data.location.region} ${data.location.postalCode}`,
-        timeZone: data.location.timezone,
-        isp: data.isp,
-      });
+      if (!data) {
+        setError("Failed to fetch geo location");
+        return;
+      }
+      console.log(data);
+      setGeoData(data);
       setPosition([data.location.lat, data.location.lng]);
     } catch (err: unknown) {
       if (err instanceof Error) {
@@ -43,6 +50,17 @@ export default function Map() {
         setError("An unknown error occurred.");
       }
     }
+    console.log({ position });
+  };
+
+  const MapRecenter = ({ position }: { position: [number, number] }) => {
+    const map = useMap();
+
+    useEffect(() => {
+      map.setView(position, map.getZoom());
+    }, [position, map]);
+
+    return null; // This component only handles recentering
   };
 
   return (
@@ -55,6 +73,7 @@ export default function Map() {
       <form
         className="absolute flex items-center p-4 top-20 left-1/2 transform -translate-x-1/2 h-12 rounded-lg shadow-lg shadow-gray-200 bg-gray-50 z-[1000]"
         onSubmit={handleSubmit}
+        id="ip-form"
       >
         <Input
           className="bg-gray-50 focus:outline-none"
@@ -80,24 +99,25 @@ export default function Map() {
       {geoData && (
         <DetailsCard
           ip={geoData.ip}
-          location={geoData.location}
-          timeZone={geoData.timeZone}
+          location={`${geoData.location.city}, ${geoData.location.region} ${geoData.location.postalCode}`}
+          timeZone={geoData.location.timezone}
           isp={geoData.isp}
         />
       )}
       <MapContainer
         center={position}
         zoom={12}
-        scrollWheelZoom
+        scrollWheelZoom={false}
         className="h-full w-full z-0"
       >
         <TileLayer url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png" />
-        {/* <MapInteraction /> */}
         <Marker position={position}>
           <Popup>
-            A pretty CSS3 popup. <br /> Easily customizable.
+            {geoData?.location?.city}, {geoData?.location?.region},{" "}
+            {geoData?.location?.country}
           </Popup>
         </Marker>
+        <MapRecenter position={position} />
       </MapContainer>
     </div>
   );
