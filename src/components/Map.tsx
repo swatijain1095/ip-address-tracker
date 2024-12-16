@@ -34,7 +34,6 @@ export default function Map() {
         setError("Failed to fetch geo location");
         return;
       }
-      console.log(data);
       setGeoData(data);
       setPosition([data.location.lat, data.location.lng]);
     } catch (err: unknown) {
