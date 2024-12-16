@@ -19,12 +19,6 @@ export default function Map() {
     return ipRegex.test(ip);
   };
 
-  useEffect(() => {
-    if (geoData?.location?.lat && geoData?.location?.lng) {
-      setPosition([geoData.location.lat, geoData.location.lng]);
-    }
-  }, [geoData]);
-
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!validateInputIP(ipAddress)) {
@@ -50,7 +44,6 @@ export default function Map() {
         setError("An unknown error occurred.");
       }
     }
-    console.log({ position });
   };
 
   const MapRecenter = ({ position }: { position: [number, number] }) => {
@@ -60,7 +53,7 @@ export default function Map() {
       map.setView(position, map.getZoom());
     }, [position, map]);
 
-    return null; // This component only handles recentering
+    return null;
   };
 
   return (
