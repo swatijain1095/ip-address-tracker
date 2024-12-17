@@ -5,12 +5,12 @@ import { Input } from "./Input";
 import { GoChevronRight } from "react-icons/go";
 import { DetailsCard } from "./DetailsCard";
 import { getGeoLocation } from "../api";
-import { Geolocation } from "../type";
+import { GeoData } from "../type";
 
 export default function Map() {
   const [ipAddress, setIpAddress] = useState("");
   const [error, setError] = useState("");
-  const [geoData, setGeoData] = useState<Geolocation | null>(null);
+  const [geoData, setGeoData] = useState<GeoData | null>(null);
   const [position, setPosition] = useState<[number, number]>([40.7, -74]);
 
   const validateInputIP = (ip: string): boolean => {
@@ -29,12 +29,26 @@ export default function Map() {
     setError("");
 
     try {
-      const data = await getGeoLocation({ ip: ipAddress });
+      const data = await getGeoLocation(ipAddress);
       if (!data) {
         setError("Failed to fetch geo location");
         return;
       }
-      setGeoData(data);
+
+      setGeoData({
+        ip: data.ip,
+        location: {
+          country: data.location.country,
+          region: data.location.region,
+          city: data.location.city,
+          lat: data.location.lat,
+          lng: data.location.lng,
+          postalCode: data.location.postalCode,
+          timezone: data.location.timezone,
+        },
+        isp: data.isp,
+      });
+
       setPosition([data.location.lat, data.location.lng]);
     } catch (err: unknown) {
       if (err instanceof Error) {
@@ -88,14 +102,7 @@ export default function Map() {
         </p>
       )}
 
-      {geoData && (
-        <DetailsCard
-          ip={geoData.ip}
-          location={`${geoData.location.city}, ${geoData.location.region} ${geoData.location.postalCode}`}
-          timeZone={geoData.location.timezone}
-          isp={geoData.isp}
-        />
-      )}
+      {geoData && <DetailsCard geoData={geoData} />}
       <MapContainer
         center={position}
         zoom={12}
@@ -105,8 +112,7 @@ export default function Map() {
         <TileLayer url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png" />
         <Marker position={position}>
           <Popup>
-            {geoData?.location?.city}, {geoData?.location?.region},{" "}
-            {geoData?.location?.country}
+            {geoData?.location.city}, {geoData?.location.country}
           </Popup>
         </Marker>
         <MapRecenter position={position} />

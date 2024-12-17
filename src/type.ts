@@ -1,4 +1,4 @@
-export interface Geolocation {
+export interface GeoData {
   ip: string;
   location: {
     country: string;
@@ -8,15 +8,6 @@ export interface Geolocation {
     lng: number;
     postalCode: string;
     timezone: string;
-    geonameId?: number;
-  };
-  domains?: string[];
-  as?: {
-    asn: number;
-    name: string;
-    route: string;
-    domain: string;
-    type: string;
   };
   isp: string;
 }
