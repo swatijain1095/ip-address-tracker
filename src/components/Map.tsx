@@ -19,9 +19,9 @@ export default function Map() {
     return ipRegex.test(ip);
   };
 
-  const fetchUserData = async () => {
+  const fetchUserData = async (ip?: string) => {
     try {
-      const data = await getGeoLocation("");
+      const data = await getGeoLocation(ip);
       if (!data) {
         setError("Failed to fetch geo location");
         return;
@@ -52,7 +52,7 @@ export default function Map() {
   };
 
   useEffect(() => {
-    fetchUserData();
+    fetchUserData("");
   }, []);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -64,35 +64,7 @@ export default function Map() {
 
     setError("");
 
-    try {
-      const data = await getGeoLocation(ipAddress);
-      if (!data) {
-        setError("Failed to fetch geo location");
-        return;
-      }
-
-      setGeoData({
-        ip: data.ip,
-        location: {
-          country: data.location.country,
-          region: data.location.region,
-          city: data.location.city,
-          lat: data.location.lat,
-          lng: data.location.lng,
-          postalCode: data.location.postalCode,
-          timezone: data.location.timezone,
-        },
-        isp: data.isp,
-      });
-
-      setPosition([data.location.lat, data.location.lng]);
-    } catch (err: unknown) {
-      if (err instanceof Error) {
-        setError(err.message);
-      } else {
-        setError("An unknown error occurred.");
-      }
-    }
+    fetchUserData(ipAddress);
   };
 
   const MapRecenter = ({ position }: { position: [number, number] }) => {
