@@ -8,7 +8,7 @@ IP Address Tracker is a web application that allows users to track the geographi
 <img width="1701" alt="Screenshot 2024-12-19 at 15 03 16" src="https://github.com/user-attachments/assets/dbd1a816-22ea-48b5-8a5c-56179e85d9cf" />
 
 
-# Stack
+# Tech Stack
 React
 
 Typescript
